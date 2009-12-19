@@ -1,52 +1,47 @@
 package Accessors::Magic;
 
-use warnings;
+use 5.008;
 use strict;
+use warnings;
+
+our $VERSION = '0.01';
+
+use XSLoader;
+
+XSLoader::load(__PACKAGE__, $VERSION);
+
+sub import {
+	my ($self, @accessors) = @_;
+	my $caller = caller;
+	for my $accessor(@accessors, 'foo') {
+		_add_accessor($caller, $accessor);
+	}
+	return;
+}
+
+1;    # End of Accessors::Magic
+
+__END__
+
 
 =head1 NAME
 
-Accessors::Magic - The great new Accessors::Magic!
+Accessors::Magic - Yet another accessor library
 
 =head1 VERSION
 
 Version 0.01
 
-=cut
-
-our $VERSION = '0.01';
-
-
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
+    package Foo::Bar;
+    use Accessors::Magic qw/foo bar/;
 
-Perhaps a little code snippet.
+    package main;
+    my $foo = Foo::Bar->new();
+    $foo->bar(1);
 
-    use Accessors::Magic;
-
-    my $foo = Accessors::Magic->new();
-    ...
-
-=head1 EXPORT
-
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
-=head1 FUNCTIONS
-
-=head2 function1
-
-=cut
-
-sub function1 {
-}
-
-=head2 function2
-
-=cut
-
-sub function2 {
-}
+Accessors::Magic is yet another accessor library. Like many others, it tries to be the fastest.
 
 =head1 AUTHOR
 
@@ -57,8 +52,6 @@ Leon Timmermans, C<< <leont at cpan.org> >>
 Please report any bugs or feature requests to C<bug-accessors-magic at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Accessors-Magic>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
-
 
 
 =head1 SUPPORT
@@ -90,10 +83,6 @@ L<http://search.cpan.org/dist/Accessors-Magic>
 
 =back
 
-
-=head1 ACKNOWLEDGEMENTS
-
-
 =head1 COPYRIGHT & LICENSE
 
 Copyright 2009 Leon Timmermans, all rights reserved.
@@ -101,7 +90,4 @@ Copyright 2009 Leon Timmermans, all rights reserved.
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
-
 =cut
-
-1; # End of Accessors::Magic
