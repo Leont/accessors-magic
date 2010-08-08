@@ -4,18 +4,22 @@ use 5.008;
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
-
+our $VERSION = '0.001';
 use XSLoader;
-
 XSLoader::load(__PACKAGE__, $VERSION);
 
-sub import {
-	my ($self, @accessors) = @_;
-	my $caller = caller;
-	for my $accessor(@accessors, 'foo') {
-		_add_accessor($caller, $accessor);
-	}
+use Exporter 5.57 qw/import/;
+our @EXPORT = qw/has/;
+
+my %redirect = (
+	ro => \&add_reader,
+	rw => \&add_accessor,
+	wr => \&add_writer,
+);
+
+sub has {
+	my ($name, %options) = @_;
+	$redirect{$options{is} || 'ro'}->(scalar caller, $name, $options{rename} || $name);
 	return;
 }
 
@@ -23,25 +27,34 @@ sub import {
 
 __END__
 
-
 =head1 NAME
 
 Accessors::Magic - Yet another accessor library
 
 =head1 VERSION
 
-Version 0.01
+Version 0.001
 
 =head1 SYNOPSIS
 
     package Foo::Bar;
-    use Accessors::Magic qw/foo bar/;
-
+    use Accessors::Magic;
+	has foo => (is => ro);
+	has bar => (is => rw);
+    
     package main;
     my $foo = Foo::Bar->new();
     $foo->bar(1);
 
-Accessors::Magic is yet another accessor library. Like many others, it tries to be the fastest.
+Accessors::Magic is yet another accessor library. It tries to be the fastest accessors library yet simple.
+
+=head1 FUNCTIONS
+
+=over 4
+
+=item * has
+
+=back
 
 =head1 AUTHOR
 
@@ -52,7 +65,6 @@ Leon Timmermans, C<< <leont at cpan.org> >>
 Please report any bugs or feature requests to C<bug-accessors-magic at rt.cpan.org>, or through
 the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Accessors-Magic>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
-
 
 =head1 SUPPORT
 
