@@ -1,0 +1,14 @@
+^_build
+^Build$
+^blib
+~$
+\.bak$
+^MANIFEST\.SKIP$
+\.swp
+\.tdy
+\.tar\.gz
+Accessors-Magic-.*
+^\.git
+^lib/.*\.c$
+^lib/.*\.o$
+^ppport.h$
